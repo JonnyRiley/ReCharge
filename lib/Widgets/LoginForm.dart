@@ -48,7 +48,7 @@ class _LoginFormState extends State<LoginForm> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => RegisterForm()));
               },
-              child: Text("Don't have an account? Register here")),
+              child: Text("Need an account? Register here")),
         ]),
       ),
       floatingActionButton: FloatingActionButton.extended(

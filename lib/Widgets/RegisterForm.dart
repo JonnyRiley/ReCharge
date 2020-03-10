@@ -63,7 +63,7 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.text,
               validator: (value) {
                 if (value.length < 2) {
-                  return 'Car Make not long enough';
+                  return 'Input not long enough';
                 }
               },
               onSaved: (value) => _carMake = value,
@@ -73,7 +73,7 @@ class _RegisterFormState extends State<RegisterForm> {
               keyboardType: TextInputType.text,
               validator: (value) {
                 if (value.length < 2) {
-                  return 'Car Model not long enough';
+                  return 'Input not long enough';
                 }
               },
               onSaved: (value) => _carModel = value,
