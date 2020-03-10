@@ -10,6 +10,7 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _name;
   String _username;
   String _password;
   String _email;
@@ -27,6 +28,16 @@ class _RegisterFormState extends State<RegisterForm> {
         key: _formKey,
         child: Column(
           children: <Widget>[
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Full Name'),
+              keyboardType: TextInputType.text,
+              validator: (value) {
+                if (value.length < 2) {
+                  return 'input not long enough';
+                }
+              },
+              onSaved: (value) => _name = value,
+            ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Username'),
               keyboardType: TextInputType.text,
