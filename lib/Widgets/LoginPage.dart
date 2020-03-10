@@ -20,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   String _carMake = '';
   String _carModel = '';
   FormType _form = FormType.login;
+  //final _formKey = GlobalKey<FormState>();
 
   _LoginPageState() {
     _usernameFilter.addListener(_usernameListen);
@@ -103,9 +104,18 @@ class _LoginPageState extends State<LoginPage> {
         child: new Column(
       children: <Widget>[
         new Container(
-            child: new TextField(
-                controller: _usernameFilter,
-                decoration: new InputDecoration(labelText: 'username'))),
+            child: new TextFormField(
+          // validator: (_usernameFilter) {
+          //   if (_usernameFilter.isEmpty) {
+          //     return 'Please enter a username';
+          //   } else {
+          //     return _usernameFilter;
+          //   }
+          // },
+          controller: _usernameFilter,
+          decoration: new InputDecoration(labelText: 'username'),
+          keyboardType: TextInputType.text,
+        )),
         new Container(
             child: new TextField(
           controller: _passwordFilter,
@@ -174,6 +184,8 @@ class _LoginPageState extends State<LoginPage> {
 // These functions can self contain any user or logic required, they all have access to username and email
 
   void _loginPressed() {
+    // if (_formKey.currentState.validate()) {
+    // }
     print('The user wants to login with $_username, $_email');
   }
 
