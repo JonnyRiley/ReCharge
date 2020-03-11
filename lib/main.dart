@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './Widgets/LoginPage.dart';
+import './Widgets/LoginForm.dart';
 
 void main() => runApp(new MyApp());
 
@@ -7,9 +7,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Surge of Energy',
+      title: 'Surge of Power',
       theme: new ThemeData(primarySwatch: Colors.green),
-      home: new LoginPage(),
+      home: new LoginForm(),
     );
   }
 }
