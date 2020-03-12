@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/Widgets/UserHomePage.dart';
 import './MainHeader.dart';
 import './LoginForm.dart';
-import './User.dart';
+import './NewUser.dart';
 
 class RegisterForm extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class RegisterForm extends StatefulWidget {
 
 class RegisterFormState extends State<RegisterForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  User user = User();
+  NewUser user = NewUser();
 
   @override
   Widget build(BuildContext context) {

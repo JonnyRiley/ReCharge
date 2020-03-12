@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:project/Widgets/UserHomePage.dart';
 import './MainHeader.dart';
 import './RegisterForm.dart';
+import '../Requests/GetUser.dart';
 import './UserHomePage.dart';
 
 class LoginForm extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  LoginFormState createState() => LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Future<User> futureUser;
+
   String username;
   String password;
 
@@ -60,8 +64,14 @@ class _LoginFormState extends State<LoginForm> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserHomePage()));
+            futureUser = fetchUser(username);
+            futureUser.then((user) => {
+                  print((user == null))
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => UserHomePage(logInUser: user)))
+                });
           }
         },
         label: Text('Log In'),

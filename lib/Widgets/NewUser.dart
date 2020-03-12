@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class User {
+class NewUser {
   String name;
   String username;
   String password;
@@ -8,7 +8,7 @@ class User {
   String carMake;
   String carModel;
 
-  User(
+  NewUser(
       {this.name,
       this.username,
       this.email,
