@@ -12,7 +12,7 @@ Future<User> fetchUser(String username) async {
     print(response.body);
     return User.fromJson(json.decode(response.body));
   } else {
-    return null;
+    throw ("$username is not registered!");
   }
 }
 
