@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:project/Widgets/UserHomePage.dart';
 import './MainHeader.dart';
 import './RegisterForm.dart';
+import '../Requests/GetUser.dart';
 import './UserHomePage.dart';
+import './ErrorAlert.dart';
 
 class LoginForm extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  LoginFormState createState() => LoginFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Future<User> futureUser;
+
   String username;
   String password;
 
@@ -29,8 +34,8 @@ class _LoginFormState extends State<LoginForm> {
                 decoration: const InputDecoration(labelText: 'Username'),
                 keyboardType: TextInputType.text,
                 validator: (value) {
-                  if (value.length < 2) {
-                    return 'Username not long enough';
+                  if (value.length <= 2) {
+                    return "username must be at least two characters";
                   }
                 },
                 onSaved: (value) => username = value,
@@ -40,8 +45,8 @@ class _LoginFormState extends State<LoginForm> {
                 keyboardType: TextInputType.text,
                 obscureText: true,
                 validator: (value) {
-                  if (value.length < 2) {
-                    return 'Password not long enough';
+                  if (value.length <= 2) {
+                    return 'Password must be at least two characters';
                   }
                 },
                 onSaved: (value) => password = value,
@@ -60,8 +65,32 @@ class _LoginFormState extends State<LoginForm> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UserHomePage()));
+            futureUser = fetchUser(username);
+            futureUser
+                .then((user) => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  UserHomePage(logInUser: user)))
+                    })
+                .catchError(
+                  (err) => showDialog<void>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(err),
+                        content: Text("Did you type correctly?"),
+                        actions: <Widget>[
+                          FlatButton(
+                              child: Text("Oops"),
+                              onPressed: () => Navigator.of(context).pop())
+                        ],
+                      );
+                    },
+                  ),
+                );
           }
         },
         label: Text('Log In'),

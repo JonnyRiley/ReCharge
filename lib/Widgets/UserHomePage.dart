@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import './MainHeader.dart';
-import './User.dart';
+import './NewUser.dart';
+import './LoginForm.dart';
+import '../Requests/GetUser.dart';
 
 class UserHomePage extends StatelessWidget {
-  User user;
-
-  UserHomePage({this.user});
+  NewUser user;
+  User logInUser;
+  UserHomePage({this.user, this.logInUser});
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +17,7 @@ class UserHomePage extends StatelessWidget {
       ),
       body: Container(
           child: Column(
-        children: <Widget>[
-          Text(user.name),
-          Text(user.username),
-          Text(user.email),
-          Text(user.carMake),
-          Text(user.carModel),
-        ],
+        children: <Widget>[Text('Welcome ${logInUser.name}')],
       )),
     );
   }
