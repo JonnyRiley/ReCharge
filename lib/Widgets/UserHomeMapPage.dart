@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import '../Requests/openCharge_request.dart';
 
 class UserHomeMapPage extends StatefulWidget {
   @override
@@ -261,18 +262,38 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
 
   Widget _buildGoogleMap(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition:
-            CameraPosition(target: LatLng(53.483959, -2.244644), zoom: 12),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
-        markers: {},
-      ),
-    );
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: FutureBuilder<List<dynamic>>(
+            future: fetchChargePoints(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(53.483959, -2.244644), zoom: 12),
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller.complete(controller);
+                  },
+                  markers: makeMarkerSet(snapshot.data),
+                );
+              } else {
+                return Text("Loading...");
+              }
+            }));
+  }
+
+  Set<Marker> makeMarkerSet(chargePointList) {
+    Set<Marker> markers = Set();
+    Marker resultMarker;
+    chargePointList.forEach((chargePoint) => {
+          resultMarker = new Marker(
+              markerId:
+                  MarkerId('${chargePoint.latitude} ${chargePoint.longitude}'),
+              position: LatLng(chargePoint.latitude, chargePoint.longitude)),
+          markers.add(resultMarker)
+        });
+    return markers;
   }
 
   Future<void> _gotoLocation(double lat, double long) async {
