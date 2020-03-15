@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../Requests/openCharge_request.dart';
+import './Form.dart';
+import './UserHomePage.dart';
 
 class UserHomeMapPage extends StatefulWidget {
   @override
@@ -23,20 +25,42 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(FontAwesomeIcons.arrowLeft),
-            onPressed: () {
-              //
-            }),
-        title: Text("New York"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(FontAwesomeIcons.search),
-              onPressed: () {
-                //
-              }),
-        ],
+        title: Text("Route Planner"),
       ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              title: Text('Home'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UserHomePage()));
+              },
+            ),
+            ListTile(
+              title: Text('Plan route'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => RouteForm()));
+              },
+            )
+          ],
+        ),
+      ),
+      //   leading: IconButton(
+      //       icon: Icon(FontAwesomeIcons.arrowLeft),
+      //       onPressed: () {
+      //         //
+      //       }),
+      //   title: Text("New York"),
+      //   actions: <Widget>[
+      //     IconButton(
+      //         icon: Icon(FontAwesomeIcons.search),
+      //         onPressed: () {
+      //           //
+      //         }),
+      //   ],
+      // ),
       body: Stack(
         children: <Widget>[
           _buildGoogleMap(context),
