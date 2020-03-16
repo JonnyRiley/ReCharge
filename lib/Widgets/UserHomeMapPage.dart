@@ -4,6 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../Requests/openCharge_request.dart';
+import './Form.dart';
+import './UserHomePage.dart';
+import "./ChargePointInfoPage.dart";
 
 class UserHomeMapPage extends StatefulWidget {
   @override
@@ -22,30 +25,60 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(FontAwesomeIcons.arrowLeft),
-            onPressed: () {
-              //
-            }),
-        title: Text("New York"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(FontAwesomeIcons.search),
-              onPressed: () {
-                //
-              }),
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          _buildGoogleMap(context),
-          _zoomminusfunction(),
-          _zoomplusfunction(),
-          _buildContainer(),
-        ],
-      ),
-    );
+        appBar: AppBar(
+          title: Text("Route Planner"),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                title: Text('Home'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => UserHomePage()));
+                },
+              ),
+              ListTile(
+                title: Text('Plan route'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => RouteForm()));
+                },
+              )
+            ],
+          ),
+        ),
+        //   leading: IconButton(
+        //       icon: Icon(FontAwesomeIcons.arrowLeft),
+        //       onPressed: () {
+        //         //
+        //       }),
+        //   title: Text("New York"),
+        //   actions: <Widget>[
+        //     IconButton(
+        //         icon: Icon(FontAwesomeIcons.search),
+        //         onPressed: () {
+        //           //
+        //         }),
+        //   ],
+        // ),
+        body: FutureBuilder(
+          future: fetchChargePoints(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Stack(
+                children: <Widget>[
+                  _buildGoogleMap(context, snapshot.data),
+                  _zoomminusfunction(),
+                  _zoomplusfunction(),
+                  _buildContainer(snapshot.data),
+                ],
+              );
+            } else {
+              return Text('loading...');
+            }
+          },
+        ));
   }
 
   Widget _zoomminusfunction() {
@@ -84,49 +117,47 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
         CameraPosition(target: LatLng(53.483959, -2.244644), zoom: zoomVal)));
   }
 
-  Widget _buildContainer() {
+  Widget _buildContainer(List chargePointList) {
     return Align(
       alignment: Alignment.bottomLeft,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 20.0),
         height: 150.0,
         child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            SizedBox(width: 10.0),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _boxes(
-                  "https://lh5.googleusercontent.com/p/AF1QipO3VPL9m-b355xWeg4MXmOQTauFAEkavSluTtJU=w225-h160-k-no",
-                  40.738380,
-                  -73.988426,
-                  "Gramercy Tavern"),
+            scrollDirection: Axis.horizontal,
+            children: makeListOfBoxes(chargePointList)
+            //       <Widget>[
+            //   SizedBox(width: 10.0),
+            //   Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child:
+            //     _boxes()
+            //   ),
+            // ],
             ),
-            SizedBox(width: 10.0),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _boxes(
-                  "https://lh5.googleusercontent.com/p/AF1QipMKRN-1zTYMUVPrH-CcKzfTo6Nai7wdL7D8PMkt=w340-h160-k-no",
-                  40.761421,
-                  -73.981667,
-                  "Le Bernardin"),
-            ),
-            SizedBox(width: 10.0),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _boxes(
-                  "https://images.unsplash.com/photo-1504940892017-d23b9053d5d4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                  40.732128,
-                  -73.999619,
-                  "Blue Hill"),
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _boxes(String _image, double lat, double long, String restaurantName) {
+  List<Widget> makeListOfBoxes(chargePointList) {
+    List<Widget> listOfBoxes = [];
+    chargePointList.forEach((chargePoint) => {
+          listOfBoxes.add(
+            _boxes(
+                chargePoint.latitude,
+                chargePoint.longitude,
+                chargePoint.title,
+                chargePoint.address,
+                chargePoint.town,
+                chargePoint.postcode),
+          )
+        });
+    return listOfBoxes;
+  }
+
+  Widget _boxes(double lat, double long, String title, dynamic address,
+      String town, dynamic postcode,
+      [String _image]) {
     return GestureDetector(
       onTap: () {
         _gotoLocation(lat, long);
@@ -141,21 +172,24 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
+                  // Container(
+                  //   width: 180,
+                  //   height: 200,
+                  //   child: ClipRRect(
+                  //     borderRadius: new BorderRadius.circular(24.0),
+                  //     // child: Image(
+                  //     //   fit: BoxFit.fill,
+                  //     //   image: NetworkImage(_image),
+                  //     // ),
+                  //   ),
+                  // ),
                   Container(
-                    width: 180,
+                    width: 350,
                     height: 200,
-                    child: ClipRRect(
-                      borderRadius: new BorderRadius.circular(24.0),
-                      child: Image(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(_image),
-                      ),
-                    ),
-                  ),
-                  Container(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: myDetailsContainer1(restaurantName),
+                      child:
+                          myDetailsContainer1(title, address, town, postcode),
                     ),
                   ),
                 ],
@@ -165,7 +199,8 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
     );
   }
 
-  Widget myDetailsContainer1(String restaurantName) {
+  Widget myDetailsContainer1(
+      String title, dynamic address, String town, dynamic postcode) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -173,7 +208,7 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
           padding: const EdgeInsets.only(left: 8.0),
           child: Container(
               child: Text(
-            restaurantName,
+            title,
             style: TextStyle(
                 color: Color(0xff6200ee),
                 fontSize: 24.0,
@@ -187,50 +222,7 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
           children: <Widget>[
             Container(
                 child: Text(
-              "4.1",
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 18.0,
-              ),
-            )),
-            Container(
-              child: Icon(
-                FontAwesomeIcons.solidStar,
-                color: Colors.amber,
-                size: 15.0,
-              ),
-            ),
-            Container(
-              child: Icon(
-                FontAwesomeIcons.solidStar,
-                color: Colors.amber,
-                size: 15.0,
-              ),
-            ),
-            Container(
-              child: Icon(
-                FontAwesomeIcons.solidStar,
-                color: Colors.amber,
-                size: 15.0,
-              ),
-            ),
-            Container(
-              child: Icon(
-                FontAwesomeIcons.solidStar,
-                color: Colors.amber,
-                size: 15.0,
-              ),
-            ),
-            Container(
-              child: Icon(
-                FontAwesomeIcons.solidStarHalf,
-                color: Colors.amber,
-                size: 15.0,
-              ),
-            ),
-            Container(
-                child: Text(
-              "(946)",
+              "$address",
               style: TextStyle(
                 color: Colors.black54,
                 fontSize: 18.0,
@@ -241,7 +233,7 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
         SizedBox(height: 5.0),
         Container(
             child: Text(
-          "American \u00B7 \u0024\u0024 \u00B7 1.6 mi",
+          "$town",
           style: TextStyle(
             color: Colors.black54,
             fontSize: 18.0,
@@ -250,37 +242,37 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
         SizedBox(height: 5.0),
         Container(
             child: Text(
-          "Closed \u00B7 Opens 17:00 Thu",
+          "$postcode",
           style: TextStyle(
               color: Colors.black54,
               fontSize: 18.0,
               fontWeight: FontWeight.bold),
         )),
+        new FlatButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChargePointInfoPage()));
+            },
+            child: Text("More info")),
       ],
     );
   }
 
-  Widget _buildGoogleMap(BuildContext context) {
+  Widget _buildGoogleMap(BuildContext context, List chargePointList) {
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: FutureBuilder<List<dynamic>>(
-            future: fetchChargePoints(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(53.483959, -2.244644), zoom: 12),
-                  onMapCreated: (GoogleMapController controller) {
-                    _controller.complete(controller);
-                  },
-                  markers: makeMarkerSet(snapshot.data),
-                );
-              } else {
-                return Text("Loading...");
-              }
-            }));
+        child: GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition:
+              CameraPosition(target: LatLng(53.483959, -2.244644), zoom: 12),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          markers: makeMarkerSet(chargePointList),
+        ));
   }
 
   Set<Marker> makeMarkerSet(chargePointList) {
@@ -300,7 +292,7 @@ class UserHomeMapPageState extends State<UserHomeMapPage> {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
       target: LatLng(lat, long),
-      zoom: 15,
+      zoom: 18,
       tilt: 50.0,
       bearing: 45.0,
     )));

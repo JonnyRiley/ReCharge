@@ -28,9 +28,13 @@ class ChargePoint {
   final double latitude;
   final double longitude;
   final int numPoints;
+  final String title;
+  final dynamic address;
+  final String town;
+  final dynamic postcode;
 
-  const ChargePoint(
-      this.connections, this.latitude, this.longitude, this.numPoints);
+  const ChargePoint(this.connections, this.latitude, this.longitude,
+      this.numPoints, this.title, this.address, this.town, this.postcode);
 
   ChargePoint.fromJson(Map jsonMap)
       : connections = jsonMap['Connections']
@@ -38,7 +42,11 @@ class ChargePoint {
             .toList(),
         latitude = jsonMap['AddressInfo']['Latitude'],
         longitude = jsonMap['AddressInfo']['Longitude'],
-        numPoints = jsonMap['NumberOfPoints'];
+        numPoints = jsonMap['NumberOfPoints'],
+        title = jsonMap['AddressInfo']['Title'],
+        address = jsonMap['AddressInfo']['AddressLine1'],
+        town = jsonMap['AddressInfo']['Town'],
+        postcode = jsonMap['AddressInfo']['Postcode'];
 }
 
 class Connection {
