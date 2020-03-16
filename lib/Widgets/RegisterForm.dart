@@ -113,10 +113,8 @@ class RegisterFormState extends State<RegisterForm> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => UserHomePage(user: this.user)));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UserHomePage()));
           }
         },
         label: Text('Register'),

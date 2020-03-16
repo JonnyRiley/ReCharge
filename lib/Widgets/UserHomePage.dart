@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import './MainHeader.dart';
 import './NewUser.dart';
 import './LoginForm.dart';
+import 'UserHomeMapPage.dart';
 import '../Requests/GetUser.dart';
 
 class UserHomePage extends StatelessWidget {
-  NewUser user;
-  User logInUser;
-  UserHomePage({this.user, this.logInUser});
+  // User logInUser;
+  UserHomePage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new MainHeader(
-        title: new Text('Chargy'),
-      ),
-      body: Container(
-          child: Column(
-        children: <Widget>[Text('Welcome ${logInUser.name}')],
-      )),
-    );
+        appBar: new MainHeader(
+          title: new Text('Chargy'),
+        ),
+        body: Container(child: UserHomeMapPage())
+        // child: Column(
+        //   children: <Widget>[Text('Welcome')],
+        // ),
+        );
   }
 }

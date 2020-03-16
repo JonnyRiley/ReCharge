@@ -70,8 +70,7 @@ class LoginFormState extends State<LoginForm> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  UserHomePage(logInUser: user)))
+                              builder: (context) => UserHomePage()))
                     })
                 .catchError(
                   (err) => showDialog<void>(
