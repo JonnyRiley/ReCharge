@@ -21,9 +21,7 @@ class LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new MainHeader(
-        title: new Text('Chargy'),
-      ),
+      appBar: MainHeader(),
       body: Form(
           autovalidate: true,
           key: _formKey,
@@ -62,6 +60,7 @@ class LoginFormState extends State<LoginForm> {
             ]),
           )),
       floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.cyanAccent,
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
@@ -93,7 +92,7 @@ class LoginFormState extends State<LoginForm> {
                 );
           }
         },
-        label: Text('Log In'),
+        label: Text('Log In', style: TextStyle(color: Colors.black)),
       ),
     );
   }
