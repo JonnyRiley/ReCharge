@@ -17,9 +17,7 @@ class RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new MainHeader(
-        title: new Text('Chargy'),
-      ),
+      appBar: MainHeader(),
       body: Form(
         autovalidate: true,
         key: _formKey,
