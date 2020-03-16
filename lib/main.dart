@@ -10,8 +10,8 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Surge of Energy',
       theme: new ThemeData(primarySwatch: Colors.blue),
-      // home: new LoginForm(),
-      home: new ChargePointInfoPage(),
+      home: new LoginForm(),
+      // home: new ChargePointInfoPage(),
     );
   }
 }
